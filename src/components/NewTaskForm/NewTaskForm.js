@@ -1,4 +1,5 @@
 import React from "react";
+import "./NewTaskForm.css";
 
 const NewTaskForm = () => {
     return (
@@ -7,8 +8,8 @@ const NewTaskForm = () => {
             <input 
                 type="text" 
                 className="new-todo" 
-                placeholder="What needs to be done?">
-            </input>
+                placeholder="What needs to be done?"
+                autoFocus></input>
         </header>
     );
 };
