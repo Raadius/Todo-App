@@ -9,6 +9,8 @@ import "./App.css";
 
 export default class App extends Component {
 
+    nextId = 0;
+
     state = {
         todoData: [
             {
@@ -21,18 +23,38 @@ export default class App extends Component {
             {
                 id: 2,
                 description: "Editing task",
-                editable: true,
+                editable: false,
                 completed: false,
                 created: `created ${formatDistanceToNow(new Date(), {addSuffix: true})}`,
             },
             {
                 id: 3,
                 description: "Active task",
-                editable: true,
+                editable: false,
                 completed: false,
                 created: `created ${formatDistanceToNow(new Date(), {addSuffix: true})}`,
             }
         ]
+    }
+
+    createTodoItem = (label) => {
+        return {
+            id: this.nextId++,
+            description: label,
+            editable: false,
+            completed: false,
+            created: `created ${formatDistanceToNow(new Date(), {addSuffix: true})}`,
+        };
+    }
+
+    addItem = (text) => {
+        const newItem = this.createTodoItem(text);
+        this.setState(({ todoData }) => {
+            const newArr = [...todoData, newItem];
+            return {
+                todoData: newArr
+            }
+        })
     }
 
     deleteTask = (id) => {
@@ -56,6 +78,10 @@ export default class App extends Component {
         });
     }
     render() {
+        const { todoData } = this.state
+        const activeTasks = todoData.filter((item) => !item.completed).length;
+        console.log(activeTasks);
+
         return (
             <section className="todoapp">
                 <NewTaskForm />
@@ -63,7 +89,7 @@ export default class App extends Component {
                     <TaskList items={ this.state.todoData }
                               onDeleted={this.deleteTask}
                               onCheckDone={this.onCheckDone} />
-                    <Footer />
+                    <Footer activeTasks={activeTasks}/>
                 </section>
             </section>
         );   
