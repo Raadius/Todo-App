@@ -12,29 +12,8 @@ export default class App extends Component {
     nextId = 0;
 
     state = {
-        todoData: [
-            {
-                id: 1,
-                description: "Completed task",
-                created: `created ${formatDistanceToNow(new Date(), {addSuffix: true})}`,
-                completed: false,
-                editable: false
-            },
-            {
-                id: 2,
-                description: "Editing task",
-                editable: false,
-                completed: false,
-                created: `created ${formatDistanceToNow(new Date(), {addSuffix: true})}`,
-            },
-            {
-                id: 3,
-                description: "Active task",
-                editable: false,
-                completed: false,
-                created: `created ${formatDistanceToNow(new Date(), {addSuffix: true})}`,
-            }
-        ]
+        todoData: [],
+        filterName: 'all'
     }
 
     createTodoItem = (label) => {
@@ -54,7 +33,7 @@ export default class App extends Component {
             return {
                 todoData: newArr
             }
-        })
+        });
     }
 
     deleteTask = (id) => {
@@ -77,19 +56,53 @@ export default class App extends Component {
             }
         });
     }
-    render() {
-        const { todoData } = this.state
-        const activeTasks = todoData.filter((item) => !item.completed).length;
-        console.log(activeTasks);
 
+    filterData (data, filterName) {
+        switch(filterName) {
+            case 'All' : 
+                return data;
+
+            case 'Active' : 
+                return data.filter(item => !item.completed);
+
+            case 'Completed' :
+                return data.filter(item => item.completed);
+
+            default : return data
+        }
+    }
+
+    onFilterChange = (filterName) => {
+        this.setState ({
+            filterName
+        });
+    }
+
+    onClearCompleted = () => {
+        this.setState (({ todoData }) => {
+            const newArray = todoData.filter(item => !item.completed);
+            return {
+                todoData: newArray
+            }
+        })
+    }
+
+    render() {
+
+        const { todoData, filterName } = this.state
+        const filterList = this.filterData(todoData, filterName);
+        const activeTasks = todoData.filter((item) => !item.completed).length;
         return (
             <section className="todoapp">
-                <NewTaskForm />
+                <NewTaskForm addItem={ this.addItem }/>
                 <section className="main">
-                    <TaskList items={ this.state.todoData }
-                              onDeleted={this.deleteTask}
-                              onCheckDone={this.onCheckDone} />
-                    <Footer activeTasks={activeTasks}/>
+                    <TaskList items={ filterList }
+                              onDeleted={ this.deleteTask }
+                              onCheckDone={ this.onCheckDone } />
+                    <Footer activeTasks={ activeTasks }
+                            filterName={ filterName }
+                            onFilterChange={ this.onFilterChange }
+                            onClearCompleted={ this.onClearCompleted }/>
                 </section>
             </section>
         );   
