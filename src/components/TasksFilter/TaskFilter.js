@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 export default class TaskFilters extends Component {
     buttons = [
@@ -15,12 +16,23 @@ export default class TaskFilters extends Component {
             label: 'Completed'
         }
     ]
+
+    static defaultProps = {
+        filterName: 'All',
+        onFilterChange: () => {},
+    }
+
+    static propTypes = {
+        filterName: PropTypes.string,
+        onFilterChange: PropTypes.func
+    }
+
     render() {
 
-        const { filter, onFilterChange } = this.props;
+        const { filterName, onFilterChange } = this.props;
 
         const allButtons = this.buttons.map(({ name, label }) => {
-            const isActive = filter === name;
+            const isActive = filterName === name;
 
             let className = '';
             if (isActive) {

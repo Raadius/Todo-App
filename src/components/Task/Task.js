@@ -1,6 +1,21 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 export default class Task extends Component {
+
+    static defaultProps = {
+        description: '',
+        created: Date.now(),
+        onDeleted: () => {},
+        onCheckDone: () => {}
+    }
+
+    static propTypes = {
+        description: PropTypes.string,
+        created: PropTypes.string,
+        onDeleted: PropTypes.func,
+        onCheckDone: PropTypes.func
+    }
     
     render() {
         const { description, created, onDeleted, onCheckDone } = this.props;

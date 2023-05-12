@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./NewTaskForm.css";
+import PropTypes from "prop-types";
 
 export default class NewTaskForm extends Component {
 
@@ -16,6 +17,13 @@ export default class NewTaskForm extends Component {
         }
     }
     
+    static defaultProps = {
+        onLabelChange: () => {},
+    }
+
+    static propTypes = {
+        onLabelChange: PropTypes.func
+    }
     render() {
         return (
             <header className="header">

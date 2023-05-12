@@ -13,7 +13,7 @@ export default class App extends Component {
 
     state = {
         todoData: [],
-        filterName: 'all'
+        filterName: 'All'
     }
 
     createTodoItem = (label) => {

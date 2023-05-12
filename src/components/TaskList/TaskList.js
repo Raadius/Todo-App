@@ -1,8 +1,26 @@
 import React, { Component } from "react";
 import Task from "../Task";
-
+import PropTypes from "prop-types";
 
 export default class TaskList extends Component {
+
+    static defaultProps = {
+        items: [],
+        onDeleted: () => {},
+        onCheckDone: () => {}
+    }
+
+    static propTypes = {
+        items: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            description: PropTypes.string.isRequired,
+            editable: PropTypes.bool.isRequired,
+            completed: PropTypes.bool.isRequired,
+            created: PropTypes.string.isRequired
+        })),
+        onDeleted: PropTypes.func,
+        onCheckDone: PropTypes.func
+    }
 
     render() {
         const { items, onDeleted, onCheckDone } = this.props;

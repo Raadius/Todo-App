@@ -1,8 +1,22 @@
 import React, { Component } from "react";
 import TaskFilters from "../TasksFilter";
-
+import PropTypes from "prop-types";
 
 export default class Footer extends Component {
+
+    static defaultProps = {
+        filterName: 'All',
+        activeTasks: 0,
+        onFilterChange: () => {},
+        onClearCompleted: () => {}
+    };
+
+    static propTypes = {
+        filterName: PropTypes.string,
+        activeTasks: PropTypes.number,
+        onFilterChange: PropTypes.func,
+        onClearCompleted: PropTypes.func
+    };
     render() {
         const { filterName, activeTasks, onFilterChange, onClearCompleted } = this.props;
 
