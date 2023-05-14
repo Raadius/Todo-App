@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import './App.css';
 
 import NewTaskForm from '../NewTaskForm';
 import TaskList from '../TaskList';
 import Footer from '../Footer';
-
-import './App.css';
 
 export default class App extends Component {
   nextId = 0;
