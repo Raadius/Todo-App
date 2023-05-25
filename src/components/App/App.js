@@ -18,7 +18,6 @@ export default class App extends Component {
     return {
       id: this.nextId++,
       description: label,
-      editable: false,
       completed: false,
       created: `created ${formatDistanceToNow(new Date(), { addSuffix: true })}`,
     };
@@ -48,6 +47,17 @@ export default class App extends Component {
     this.setState(({ todoData }) => {
       const idx = todoData.findIndex((item) => item.id === id);
       const newItem = { ...todoData[idx], completed: !todoData[idx].completed };
+      const newArray = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+      return {
+        todoData: newArray,
+      };
+    });
+  };
+
+  onToggleEdit = (text, id) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((item) => item.id === id);
+      const newItem = { ...todoData[idx], description: text };
       const newArray = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
       return {
         todoData: newArray,
@@ -94,7 +104,12 @@ export default class App extends Component {
       <section className="todoapp">
         <NewTaskForm addItem={this.addItem} />
         <section className="main">
-          <TaskList items={filterList} onDeleted={this.deleteTask} onCheckDone={this.onCheckDone} />
+          <TaskList
+            items={filterList}
+            onDeleted={this.deleteTask}
+            onCheckDone={this.onCheckDone}
+            onToggleEdit={this.onToggleEdit}
+          />
           <Footer
             activeTasks={activeTasks}
             filterName={filterName}
