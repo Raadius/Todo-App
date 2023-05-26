@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { formatDistanceToNow } from 'date-fns';
 import './App.css';
 
 import NewTaskForm from '../NewTaskForm';
@@ -8,23 +7,33 @@ import Footer from '../Footer';
 
 export default class App extends Component {
   nextId = 0;
+  interval;
 
   state = {
     todoData: [],
     filterName: 'All',
   };
-
-  createTodoItem = (label) => {
+  //таймер создаётся в секундах
+  createTodoItem = (label, min, sec) => {
+    if (min < 10) {
+      min = `${0}${min}`;
+    } else if (sec < 10) {
+      sec = '0' + sec;
+    }
     return {
       id: this.nextId++,
       description: label,
       completed: false,
-      created: `created ${formatDistanceToNow(new Date(), { addSuffix: true })}`,
+      date: new Date(),
+      minutes: Number(min),
+      seconds: Number(sec),
     };
   };
 
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text);
+  addItem = (text, min, sec) => {
+    console.log(min);
+    console.log(sec);
+    const newItem = this.createTodoItem(text, min, sec);
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem];
       return {
@@ -96,6 +105,47 @@ export default class App extends Component {
     });
   };
 
+  onTimeLeft = (id) => {
+    try {
+      this.setState(({ todoData }) => {
+        const idx = this.state.todoData.findIndex((item) => item.id === id);
+        const reachableItem = todoData[idx];
+        if (reachableItem.minutes !== 0 && reachableItem.seconds === 0) {
+          const newItem = { ...reachableItem, minutes: reachableItem.minutes - 1, seconds: 59 };
+          const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+          return {
+            todoData: newArr,
+          };
+        } else if (reachableItem.minutes === 0 && reachableItem.seconds === 0) {
+          const newItem = { ...reachableItem, minutes: 0, seconds: 0 };
+          const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+          return {
+            todoData: newArr,
+          };
+        } else {
+          const newItem = { ...reachableItem, seconds: reachableItem.seconds - 1 };
+          const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+          return {
+            todoData: newArr,
+          };
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  startCounting = (id) => {
+    clearInterval(this.interval);
+    this.interval = setInterval(() => {
+      this.onSecondsToComplete(id);
+    }, 1000);
+  };
+
+  stopCounting = () => {
+    clearInterval(this.interval);
+  };
+
   render() {
     const { todoData, filterName } = this.state;
     const filterList = this.filterData(todoData, filterName);
@@ -109,6 +159,9 @@ export default class App extends Component {
             onDeleted={this.deleteTask}
             onCheckDone={this.onCheckDone}
             onToggleEdit={this.onToggleEdit}
+            onSecondsToComplete={this.onTimeLeft}
+            onStartCounting={this.startCounting}
+            onStopCounting={this.stopCounting}
           />
           <Footer
             activeTasks={activeTasks}

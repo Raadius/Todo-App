@@ -10,25 +10,24 @@ export default class TaskList extends Component {
     onDeleted: () => {},
     onCheckDone: () => {},
     ontoggleEdit: () => {},
+    onSecondsToComplete: () => {},
+    onStartCounting: () => {},
+    onStopCounting: () => {},
   };
 
   static propTypes = {
-    items: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        description: PropTypes.string.isRequired,
-        completed: PropTypes.bool.isRequired,
-        created: PropTypes.string.isRequired,
-      })
-    ),
+    items: PropTypes.arrayOf(PropTypes.object),
     onDeleted: PropTypes.func,
     onCheckDone: PropTypes.func,
     ontoggleEdit: PropTypes.func,
+    onSecondsToComplete: PropTypes.func,
+    onStartCounting: PropTypes.func,
+    onStopCounting: PropTypes.func,
   };
 
   render() {
-    const { items, onDeleted, onCheckDone, onToggleEdit } = this.props;
-
+    const { items, onDeleted, onCheckDone, onToggleEdit, onSecondsToComplete, onStartCounting, onStopCounting } =
+      this.props;
     const element = items.map(({ id, completed, ...itemsProp }) => {
       return (
         <Task
@@ -38,6 +37,9 @@ export default class TaskList extends Component {
           onDeleted={() => onDeleted(id)}
           onCheckDone={() => onCheckDone(id)}
           onToggleEdit={(description) => onToggleEdit(description, id)}
+          refreshTimer={() => onSecondsToComplete(id)}
+          startCounting={() => onStartCounting(id)}
+          stopCounting={() => onStopCounting()}
         />
       );
     });
