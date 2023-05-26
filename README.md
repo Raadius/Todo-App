@@ -1,1 +1,1 @@
-https://todo-app-raadius.vercel.app/
+https://vercel.com/raadius/todo-app-timer
