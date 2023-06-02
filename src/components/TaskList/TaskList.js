@@ -3,16 +3,6 @@ import './TaskList.css';
 
 import Task from '../Task';
 
-TaskList.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.object),
-  onDeleted: PropTypes.func,
-  onCheckDone: PropTypes.func,
-  ontoggleEdit: PropTypes.func,
-  onSecondsToComplete: PropTypes.func,
-  onStartCounting: PropTypes.func,
-  onStopCounting: PropTypes.func,
-};
-
 const TaskList = (props) => {
   const { onDeleted, onCheckDone, onToggleEdit, onSecondsToComplete } = props;
 
@@ -31,6 +21,16 @@ const TaskList = (props) => {
   });
 
   return <ul className="todo-list">{taskListItem}</ul>;
+};
+
+TaskList.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.object),
+  onDeleted: PropTypes.func,
+  onCheckDone: PropTypes.func,
+  ontoggleEdit: PropTypes.func,
+  onSecondsToComplete: PropTypes.func,
+  onStartCounting: PropTypes.func,
+  onStopCounting: PropTypes.func,
 };
 
 export default TaskList;

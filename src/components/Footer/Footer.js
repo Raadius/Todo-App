@@ -2,13 +2,6 @@ import './Footer.css';
 
 import TaskFilters from '../TasksFilter';
 
-Footer.defaultProps = {
-  filterName: 'All',
-  activeTasks: 0,
-  onFilterChange: () => {},
-  onClearCompleted: () => {},
-};
-
 const Footer = ({ filterName, activeTasks, onFilterChange, onClearCompleted }) => {
   return (
     <footer className="footer">
@@ -19,6 +12,13 @@ const Footer = ({ filterName, activeTasks, onFilterChange, onClearCompleted }) =
       </button>
     </footer>
   );
+};
+
+Footer.defaultProps = {
+  filterName: 'All',
+  activeTasks: 0,
+  onFilterChange: () => {},
+  onClearCompleted: () => {},
 };
 
 export default Footer;

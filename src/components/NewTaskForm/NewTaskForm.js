@@ -2,15 +2,6 @@ import { useState } from 'react';
 import './NewTaskForm.css';
 import PropTypes from 'prop-types';
 
-newTaskForm.propTypes = {
-  onLabelChange: PropTypes.func,
-  addItem: PropTypes.func,
-  label: PropTypes.string,
-  min: PropTypes.number,
-  sec: PropTypes.number,
-  onMinutesChange: PropTypes.func,
-  onSecChange: PropTypes.func,
-};
 const newTaskForm = (props) => {
   const [label, setLabel] = useState('');
   const [min, setMin] = useState('');
@@ -79,6 +70,16 @@ const newTaskForm = (props) => {
       </form>
     </header>
   );
+};
+
+newTaskForm.propTypes = {
+  onLabelChange: PropTypes.func,
+  addItem: PropTypes.func,
+  label: PropTypes.string,
+  min: PropTypes.number,
+  sec: PropTypes.number,
+  onMinutesChange: PropTypes.func,
+  onSecChange: PropTypes.func,
 };
 
 export default newTaskForm;
