@@ -2,18 +2,19 @@ import { useState } from 'react';
 import './NewTaskForm.css';
 import PropTypes from 'prop-types';
 
+newTaskForm.propTypes = {
+  onLabelChange: PropTypes.func,
+  addItem: PropTypes.func,
+  label: PropTypes.string,
+  min: PropTypes.number,
+  sec: PropTypes.number,
+  onMinutesChange: PropTypes.func,
+  onSecChange: PropTypes.func,
+};
 const newTaskForm = (props) => {
   const [label, setLabel] = useState('');
   const [min, setMin] = useState('');
   const [sec, setSec] = useState('');
-
-  newTaskForm.defaultProps = {
-    onLabelChange: () => {},
-  };
-
-  newTaskForm.propTypes = {
-    onLabelChange: PropTypes.func,
-  };
 
   const onLabelChange = (e) => {
     setLabel(e.target.value);

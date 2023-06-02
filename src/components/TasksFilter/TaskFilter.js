@@ -1,6 +1,15 @@
-/* eslint-disable no-undef */
 import PropTypes from 'prop-types';
 import './TaskFilter.css';
+
+TaskFilters.defaultProps = {
+  filterName: 'All',
+  onFilterChange: () => {},
+};
+
+TaskFilters.propTypes = {
+  filterName: PropTypes.string,
+  onFilterChange: PropTypes.func,
+};
 
 const TaskFilters = ({ filterName, onFilterChange }) => {
   const buttons = [
@@ -17,16 +26,6 @@ const TaskFilters = ({ filterName, onFilterChange }) => {
       label: 'Completed',
     },
   ];
-
-  TaskFilters.defaultProps = {
-    filterName: 'All',
-    onFilterChange: () => {},
-  };
-
-  TaskFilters.propTypes = {
-    filterName: PropTypes.string,
-    onFilterChange: PropTypes.func,
-  };
 
   const allButtons = buttons.map(({ name, label }) => {
     const activeButton = filterName === name;

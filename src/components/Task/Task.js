@@ -1,8 +1,21 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
 import './Task.css';
+
+Task.propTypes = {
+  description: PropTypes.string,
+  created: PropTypes.number,
+  date: PropTypes.object,
+  completed: PropTypes.bool,
+  onDeleted: PropTypes.func,
+  onCheckDone: PropTypes.func,
+  onToggleEdit: PropTypes.func,
+  onSecondsToComplete: PropTypes.func,
+  onStartCounting: PropTypes.func,
+  onStopCounting: PropTypes.func,
+  id: PropTypes.number,
+};
 const Task = (props) => {
   const interval = useRef();
   const timerID = useRef();
@@ -108,16 +121,6 @@ const Task = (props) => {
       </form>
     </li>
   );
-};
-
-Task.propTypes = {
-  description: PropTypes.string,
-  created: PropTypes.number,
-  date: PropTypes.object,
-  completed: PropTypes.bool,
-  onDeleted: PropTypes.func,
-  onCheckDone: PropTypes.func,
-  onToggleEdit: PropTypes.func,
 };
 
 export default Task;
