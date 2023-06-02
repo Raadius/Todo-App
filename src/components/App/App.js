@@ -53,7 +53,6 @@ const App = () => {
   };
 
   const onToggleEdit = (text, id) => {
-    console.log(id);
     setTodoData((todoData) => {
       const idx = todoData.findIndex((item) => item.id === id);
       const newItem = { ...todoData[idx], description: text };
