@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+/* eslint-disable no-undef */
 import PropTypes from 'prop-types';
 import './TaskFilter.css';
 
-export default class TaskFilters extends Component {
-  buttons = [
+const TaskFilters = ({ filterName, onFilterChange }) => {
+  const buttons = [
     {
       name: 'All',
       label: 'All',
@@ -18,36 +18,29 @@ export default class TaskFilters extends Component {
     },
   ];
 
-  static defaultProps = {
+  TaskFilters.defaultProps = {
     filterName: 'All',
     onFilterChange: () => {},
   };
 
-  static propTypes = {
+  TaskFilters.propTypes = {
     filterName: PropTypes.string,
     onFilterChange: PropTypes.func,
   };
 
-  render() {
-    const { filterName, onFilterChange } = this.props;
+  const allButtons = buttons.map(({ name, label }) => {
+    const activeButton = filterName === name;
+    const isSelected = activeButton ? 'selected' : '';
+    return (
+      <li key={name}>
+        <button className={isSelected} onClick={() => onFilterChange(name)}>
+          {label}
+        </button>
+      </li>
+    );
+  });
 
-    const allButtons = this.buttons.map(({ name, label }) => {
-      const isActive = filterName === name;
+  return <ul className="filters">{allButtons}</ul>;
+};
 
-      let className = '';
-      if (isActive) {
-        className = 'selected';
-      }
-
-      return (
-        <li key={name}>
-          <button className={className} onClick={() => onFilterChange(name)}>
-            {label}
-          </button>
-        </li>
-      );
-    });
-
-    return <ul className="filters">{allButtons}</ul>;
-  }
-}
+export default TaskFilters;

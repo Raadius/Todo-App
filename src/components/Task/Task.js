@@ -1,136 +1,123 @@
-import React, { Component } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
 import './Task.css';
-export default class Task extends Component {
-  state = {
-    editable: false,
-    value: '',
-    date: '',
-    id: '',
-    isRunning: false,
-    created: formatDistanceToNow(this.props.date, { includeSeconds: true }),
-  };
+const Task = (props) => {
+  const interval = useRef();
+  const timerID = useRef();
 
-  interval = 0;
-  componentDidMount() {
-    this.timerID = setInterval(
-      () => this.setState({ created: formatDistanceToNow(this.props.date, { includeSeconds: true }) }),
-      1000
-    );
-  }
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(props.description);
+  const [isRunning, setIsRunning] = useState(false);
+  // const [id, setId] = useState(0);
+  const [created, setCreated] = useState(formatDistanceToNow(props.date, { includeSeconds: true }));
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  static defaultProps = {
-    id: 0,
-    description: '',
-    date: Date.now(),
-    time: '',
-    onDeleted: () => {},
-    onCheckDone: () => {},
-    onToggleEdit: () => {},
-  };
-
-  static propTypes = {
-    description: PropTypes.string,
-    created: PropTypes.number,
-    date: PropTypes.object,
-    completed: PropTypes.bool,
-    onDeleted: PropTypes.func,
-    onCheckDone: PropTypes.func,
-    onToggleEdit: PropTypes.func,
-  };
-
-  onEditing = () => {
-    this.setState({
-      editable: true,
-      value: this.props.description,
-    });
-    document.addEventListener('keydown', this.onKeyDown);
-  };
-
-  onKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      this.setState({
-        editable: false,
-      });
-      document.removeEventListener('keydown', this.onKeyDown);
-    }
-  };
-
-  onInputChange = (e) => {
-    this.setState({
-      value: e.target.value,
-      date: new Date(),
-      id: this.props.id,
-    });
-  };
-
-  onSubmit = (e) => {
-    e.preventDefault();
-    this.props.onToggleEdit(this.state.value);
-    this.setState({
-      editable: false,
-      date: '',
-      value: '',
-    });
-  };
-
-  startCounting = () => {
-    clearInterval(this.interval);
-    this.interval = setInterval(() => {
-      this.props.refreshTimer();
+  useEffect(() => {
+    timerID.current = setInterval(() => {
+      setCreated(formatDistanceToNow(props.date, { includeSeconds: true }));
     }, 1000);
-    this.setState({ isRunning: true });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearInterval(interval.current);
+      setIsRunning(false);
+    };
+  }, []);
+
+  const onEditing = () => {
+    setEditing(true);
+    setValue(props.description);
+    document.addEventListener('keydown', onKeyDown);
   };
 
-  stopCounting = () => {
-    clearInterval(this.interval);
-    this.setState({ isRunning: false });
+  const onKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setEditing(false);
+      document.removeEventListener('keydown', onKeyDown);
+    }
   };
 
-  render() {
-    const { description, onDeleted, onCheckDone, completed, minutes, seconds } = this.props;
-    const { editable, value, created, isRunning } = this.state;
-    let classNames = '';
-    if (completed) {
-      classNames += 'completed';
-    }
-    if (editable) {
-      classNames += 'editing';
-    }
-    return (
-      <li className={classNames}>
-        <div className="view">
-          {completed ? (
-            <input className="toggle" type="checkbox" checked onClick={onCheckDone} />
-          ) : (
-            <input className="toggle" type="checkbox" onClick={onCheckDone} />
-          )}
-          <label>
-            <span className="title">{description}</span>
-            <span className="description">
-              {isRunning ? (
-                <button className="icon icon-pause" onClick={this.stopCounting} disabled={!isRunning}></button>
-              ) : (
-                <button className="icon icon-play" onClick={this.startCounting} disabled={isRunning}></button>
-              )}
-              <span>
-                {minutes < 10 ? `${0}${minutes}` : minutes} {seconds < 10 ? `${0}${seconds}` : seconds}
-              </span>
+  const onInputChange = (e) => {
+    e.preventDefault();
+    setValue(e.target.value);
+    // setId(props.id);
+    document.removeEventListener('keydown', onKeyDown);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    props.onToggleEdit(value);
+    setEditing(false);
+  };
+
+  const doneCounting = () => {
+    clearInterval(interval.current);
+    setIsRunning(false);
+    props.onCheckDone();
+  };
+
+  const stopCounting = () => {
+    clearInterval(interval.current);
+    setIsRunning(false);
+  };
+
+  const startCounting = () => {
+    clearInterval(interval.current);
+    interval.current = setInterval(() => {
+      props.onSecondsToComplete();
+    }, 1000);
+
+    setIsRunning(true);
+  };
+
+  const isCompleted = props.completed ? 'completed' : 'not-completed';
+  const isEditing = editing ? 'editing' : 'not-editing';
+  const checkBoxChecked = props.completed ? (
+    <input className="toggle" type="checkbox" checked onClick={doneCounting} value={'b'} />
+  ) : (
+    <input className="toggle" type="checkbox" onClick={doneCounting} value={'a'} />
+  );
+  const toggleButton = isRunning ? (
+    <button className="icon icon-pause" onClick={stopCounting} disabled={!isRunning}></button>
+  ) : (
+    <button className="icon icon-play" onClick={startCounting} disabled={isRunning}></button>
+  );
+
+  return (
+    <li className={`${isCompleted} ${isEditing}`} disabled={isRunning}>
+      <div className="view">
+        {checkBoxChecked}
+        <label>
+          <span className="title">{value}</span>
+          <span className="description">
+            {toggleButton}
+            <span>
+              {props.minutes < 10 ? `${0}${props.minutes}` : props.minutes}{' '}
+              {props.seconds < 10 ? `${0}${props.seconds}` : props.seconds}
             </span>
-            <span className="description">{`created ${created} ago`}</span>
-          </label>
-          <button className="icon icon-edit" onClick={this.onEditing}></button>
-          <button className="icon icon-destroy" onClick={onDeleted}></button>
-        </div>
-        <form onSubmit={this.onSubmit}>
-          <input required className="edit" type="text" onChange={this.onInputChange} value={value}></input>
-        </form>
-      </li>
-    );
-  }
-}
+          </span>
+          <span className="description">{`created ${created} ago`}</span>
+        </label>
+        <button className="icon icon-edit" onClick={onEditing}></button>
+        <button className="icon icon-destroy" onClick={props.onDeleted}></button>
+      </div>
+      <form onSubmit={onSubmit}>
+        <input required className="edit" type="text" onChange={onInputChange} value={value}></input>
+      </form>
+    </li>
+  );
+};
+
+Task.propTypes = {
+  description: PropTypes.string,
+  created: PropTypes.number,
+  date: PropTypes.object,
+  completed: PropTypes.bool,
+  onDeleted: PropTypes.func,
+  onCheckDone: PropTypes.func,
+  onToggleEdit: PropTypes.func,
+};
+
+export default Task;
