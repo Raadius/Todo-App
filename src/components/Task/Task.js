@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
@@ -10,7 +11,6 @@ const Task = (props) => {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(props.description);
   const [isRunning, setIsRunning] = useState(false);
-  // const [id, setId] = useState(0);
   const [created, setCreated] = useState(formatDistanceToNow(props.date, { includeSeconds: true }));
 
   useEffect(() => {
@@ -42,7 +42,6 @@ const Task = (props) => {
   const onInputChange = (e) => {
     e.preventDefault();
     setValue(e.target.value);
-    // setId(props.id);
     document.removeEventListener('keydown', onKeyDown);
   };
 
@@ -74,11 +73,6 @@ const Task = (props) => {
 
   const isCompleted = props.completed ? 'completed' : 'not-completed';
   const isEditing = editing ? 'editing' : 'not-editing';
-  const checkBoxChecked = props.completed ? (
-    <input className="toggle" type="checkbox" checked onClick={doneCounting} value={'b'} />
-  ) : (
-    <input className="toggle" type="checkbox" onClick={doneCounting} value={'a'} />
-  );
   const toggleButton = isRunning ? (
     <button className="icon icon-pause" onClick={stopCounting} disabled={!isRunning}></button>
   ) : (
@@ -88,7 +82,7 @@ const Task = (props) => {
   return (
     <li className={`${isCompleted} ${isEditing}`} disabled={isRunning}>
       <div className="view">
-        {checkBoxChecked}
+        <input className="toggle" type="checkbox" defaultChecked={props.completed} onClick={doneCounting} value={'b'} />
         <label>
           <span className="title">{value}</span>
           <span className="description">
